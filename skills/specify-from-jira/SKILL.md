@@ -24,6 +24,8 @@ Extract the Jira ticket ID (first whitespace-delimited token from `$ARGUMENTS`) 
 
 ### 2. Fetch Jira Ticket
 
+**IMPORTANT: Only perform read operations against Jira. Never create, edit, or delete Jira issues, comments, or any other Jira resources.**
+
 Using the Atlassian MCP server, retrieve the following for the ticket:
 
 - **Summary** — the issue title
