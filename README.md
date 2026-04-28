@@ -18,6 +18,8 @@ claude plugin install speckit-extensions@yesmarket/claude-marketplace
 
 This plugin bundles the [Atlassian Rovo hosted MCP server](https://mcp.atlassian.com) directly — no separate dependency installation required.
 
+> **Why bundle MCP servers directly?** At the time of writing, Claude Code does not auto-install plugin dependencies, so declaring an Atlassian plugin dependency would require users to install it manually. Bundling the MCP server directly keeps installation to a single step. If plugin dependency auto-installation is supported in a future release, this plugin may switch to declaring dependencies instead.
+>
 > **Note:** If you also have the official [Atlassian plugin](https://github.com/atlassian/atlassian-mcp-server) installed, there are no conflicts. Claude Code handles duplicate MCP server registrations gracefully.
 
 ## Skills
@@ -101,7 +103,7 @@ Each skill in this plugin follows the same pattern:
 3. Compose a structured input block
 4. Invoke the appropriate `/speckit.*` command
 
-If the skill depends on an MCP server not already bundled by this plugin, add it to the `mcpServers` map in `.claude-plugin/plugin.json`.
+If the skill depends on an MCP server not already bundled by this plugin, add it to the `mcpServers` map in `.claude-plugin/plugin.json`. MCP servers are bundled directly (rather than declared as plugin dependencies) because plugin dependencies are not auto-installed at the time of writing.
 
 **4. Open a pull request**
 
