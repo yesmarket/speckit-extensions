@@ -1,0 +1,9 @@
+{
+  "name": "speckit-extensions",
+  "description": "Configures MCP servers, plugins, and skills for an AI-assisted spec-driven development workflow. Includes context-gathering skills that query external systems like Jira, Confluence, Figma, and others to drive wrapped speckit commands.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Ryan Bartsch"
+  },
+  "dependencies": ["atlassian"]
+}
