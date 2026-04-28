@@ -10,6 +10,8 @@ A Claude Code plugin for AI-assisted spec-driven development. Provides skills th
 claude plugin marketplace add yesmarket/claude-marketplace
 ```
 
+This adds the [yesmarket/claude-marketplace](https://github.com/yesmarket/claude-marketplace) as a source for plugin installation.
+
 **2. Install the plugin**
 
 ```sh
