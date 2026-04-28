@@ -10,13 +10,21 @@ A Claude Code plugin for AI-assisted spec-driven development. Provides skills th
 claude plugin marketplace add yesmarket/claude-marketplace
 ```
 
-**2. Install the plugin**
+**2. Install plugin dependencies**
+
+Due to an open issue, plugin dependencies are not automatically installed. Install the [Atlassian](https://github.com/atlassian/atlassian-mcp-server) dependency manually before adding this plugin:
+
+```sh
+claude plugin install atlassian@claude-plugins-official
+```
+
+> **Note:** Once the dependency auto-install issue is resolved, this step will no longer be required.
+
+**3. Install the plugin**
 
 ```sh
 claude plugin install speckit-extensions@yesmarket/claude-marketplace
 ```
-
-This will also install the [Atlassian](https://github.com/atlassian/atlassian-mcp-server) plugin dependency, which provides the MCP server and skills for Jira and Confluence.
 
 ## Skills
 
