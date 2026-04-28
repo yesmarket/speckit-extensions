@@ -5,5 +5,5 @@
   "author": {
     "name": "Ryan Bartsch"
   },
-  "dependencies": ["atlassian"]
+  "dependencies": ["atlassian@claude-plugins-official"]
 }
