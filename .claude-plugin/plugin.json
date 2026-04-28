@@ -5,5 +5,10 @@
   "author": {
     "name": "Ryan Bartsch"
   },
-  "dependencies": ["atlassian@claude-plugins-official"]
+  "mcpServers": {
+    "atlassian": {
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse"
+    }
+  }
 }

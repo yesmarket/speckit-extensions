@@ -10,21 +10,15 @@ A Claude Code plugin for AI-assisted spec-driven development. Provides skills th
 claude plugin marketplace add yesmarket/claude-marketplace
 ```
 
-**2. Install plugin dependencies**
-
-Due to an open issue, plugin dependencies are not automatically installed. Install the [Atlassian](https://github.com/atlassian/atlassian-mcp-server) dependency manually before adding this plugin:
-
-```sh
-claude plugin install atlassian@claude-plugins-official
-```
-
-> **Note:** Once the dependency auto-install issue is resolved, this step will no longer be required.
-
-**3. Install the plugin**
+**2. Install the plugin**
 
 ```sh
 claude plugin install speckit-extensions@yesmarket/claude-marketplace
 ```
+
+This plugin bundles the [Atlassian Rovo hosted MCP server](https://mcp.atlassian.com) directly — no separate dependency installation required.
+
+> **Note:** If you also have the official [Atlassian plugin](https://github.com/atlassian/atlassian-mcp-server) installed, there are no conflicts. Claude Code handles duplicate MCP server registrations gracefully.
 
 ## Skills
 
@@ -60,12 +54,6 @@ claude plugin update speckit-extensions
 
 ```sh
 claude plugin remove speckit-extensions
-```
-
-This does not remove the `atlassian` dependency — remove it separately if it is no longer needed:
-
-```sh
-claude plugin remove atlassian
 ```
 
 ## Contributing
@@ -113,7 +101,7 @@ Each skill in this plugin follows the same pattern:
 3. Compose a structured input block
 4. Invoke the appropriate `/speckit.*` command
 
-If the skill depends on an MCP server that isn't already provided by the `atlassian` dependency, add the plugin that provides it to the `dependencies` array in `.claude-plugin/plugin.json`.
+If the skill depends on an MCP server not already bundled by this plugin, add it to the `mcpServers` map in `.claude-plugin/plugin.json`.
 
 **4. Open a pull request**
 
