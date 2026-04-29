@@ -77,6 +77,32 @@ The skill parses the document ID and page ID from the URL, fetches the diagram f
 
 > **Authentication:** The Lucidchart MCP server uses OAuth. You will be prompted to authenticate with your Lucid account on first use.
 
+### `plan-from-confluence`
+
+Fetches a Confluence page and its full child hierarchy, feeding each page individually into `/speckit.plan`.
+
+```
+/speckit-extensions:plan-from-confluence <confluence-url> [additional-input]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|---|---|---|
+| `confluence-url` | Yes | URL to a Confluence page, e.g. `https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Page+Title` |
+| `additional-input` | No | Extra context or instructions passed as a separate invocation of `/speckit.plan` |
+
+**Example:**
+
+```
+/speckit-extensions:plan-from-confluence https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/HLD
+/speckit-extensions:plan-from-confluence https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/HLD focus on the data access layer
+```
+
+The skill parses the space key and page ID from the URL, recursively fetches all descendant pages depth-first via the Atlassian MCP server, and invokes `/speckit.plan` once per page. If additional input is provided, it is passed as a final separate invocation.
+
+> **Authentication:** The Atlassian MCP server requires authentication with your Atlassian account.
+
 ### `constitution-from-confluence`
 
 Fetches a Confluence page and its full child hierarchy, feeding each page individually into `/speckit.constitution`.
