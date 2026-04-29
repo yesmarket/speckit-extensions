@@ -18,7 +18,10 @@ This adds the [yesmarket/claude-marketplace](https://github.com/yesmarket/claude
 claude plugin install speckit-extensions@yesmarket/claude-marketplace
 ```
 
-This plugin bundles the [Atlassian Rovo hosted MCP server](https://mcp.atlassian.com) directly — no separate dependency installation required.
+This plugin bundles the following MCP servers directly — no separate dependency installation required:
+
+- [Atlassian Rovo hosted MCP server](https://mcp.atlassian.com)
+- [Lucid MCP server](https://mcp.lucid.app/mcp)
 
 > **Why bundle MCP servers directly?** At the time of writing, Claude Code does not auto-install plugin dependencies, so declaring an Atlassian plugin dependency would require users to install it manually. Bundling the MCP server directly keeps installation to a single step. If plugin dependency auto-installation is supported in a future release, this plugin may switch to declaring dependencies instead.
 >
@@ -47,6 +50,32 @@ Fetches a Jira ticket and uses it as context for `/speckit.specify`.
 /speckit-extensions:specify-from-jira PROJ-123
 /speckit-extensions:specify-from-jira PROJ-123 focus on the mobile experience
 ```
+
+### `plan-from-lucid`
+
+Fetches a Lucidchart diagram page and uses it as context for `/speckit.plan`.
+
+```
+/speckit-extensions:plan-from-lucid <lucid-url> [additional-input]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|---|---|---|
+| `lucid-url` | Yes | URL to a Lucidchart document page, including the `page` query parameter |
+| `additional-input` | No | Extra context or instructions to include alongside the diagram |
+
+**Example:**
+
+```
+/speckit-extensions:plan-from-lucid https://lucid.app/lucidchart/9c028565-3df6-4c34-9db4-449bb5c7c20d/edit?page=4WDSdv3BMKuG
+/speckit-extensions:plan-from-lucid https://lucid.app/lucidchart/9c028565-3df6-4c34-9db4-449bb5c7c20d/edit?page=4WDSdv3BMKuG focus on the data layer
+```
+
+The skill parses the document ID and page ID from the URL, fetches the diagram from the Lucidchart MCP server in the most structured format available (SVG or XML preferred), and passes it along with any additional input to `/speckit.plan`.
+
+> **Authentication:** The Lucidchart MCP server uses OAuth. You will be prompted to authenticate with your Lucid account on first use.
 
 ## Updating
 
