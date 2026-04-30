@@ -29,6 +29,32 @@ This plugin bundles the following MCP servers directly — no separate dependenc
 
 ## Skills
 
+### `constitution-from-confluence`
+
+Fetches a Confluence page and its full child hierarchy, feeding each page individually into `/speckit.constitution`.
+
+```
+/speckit-extensions:constitution-from-confluence <confluence-url> [additional-input]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|---|---|---|
+| `confluence-url` | Yes | URL to a Confluence page, e.g. `https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Page+Title` |
+| `additional-input` | No | Extra context or instructions passed as a separate invocation of `/speckit.constitution` |
+
+**Example:**
+
+```
+/speckit-extensions:constitution-from-confluence https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Home
+/speckit-extensions:constitution-from-confluence https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Home focus on the authentication domain
+```
+
+The skill parses the space key and page ID from the URL, recursively fetches all descendant pages depth-first via the Atlassian MCP server, and invokes `/speckit.constitution` once per page. If additional input is provided, it is passed as a final separate invocation.
+
+> **Authentication:** The Atlassian MCP server requires authentication with your Atlassian account.
+
 ### `specify-from-jira`
 
 Fetches a Jira ticket and uses it as context for `/speckit.specify`.
@@ -50,32 +76,6 @@ Fetches a Jira ticket and uses it as context for `/speckit.specify`.
 /speckit-extensions:specify-from-jira PROJ-123
 /speckit-extensions:specify-from-jira PROJ-123 focus on the mobile experience
 ```
-
-### `plan-from-lucid`
-
-Fetches a Lucidchart diagram page and uses it as context for `/speckit.plan`.
-
-```
-/speckit-extensions:plan-from-lucid <lucid-url> [additional-input]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|---|---|---|
-| `lucid-url` | Yes | URL to a Lucidchart document page, including the `page` query parameter |
-| `additional-input` | No | Extra context or instructions to include alongside the diagram |
-
-**Example:**
-
-```
-/speckit-extensions:plan-from-lucid https://lucid.app/lucidchart/9c028565-3df6-4c34-9db4-449bb5c7c20d/edit?page=4WDSdv3BMKuG
-/speckit-extensions:plan-from-lucid https://lucid.app/lucidchart/9c028565-3df6-4c34-9db4-449bb5c7c20d/edit?page=4WDSdv3BMKuG focus on the data layer
-```
-
-The skill parses the document ID and page ID from the URL, fetches the diagram from the Lucidchart MCP server in the most structured format available (SVG or XML preferred), and passes it along with any additional input to `/speckit.plan`.
-
-> **Authentication:** The Lucidchart MCP server uses OAuth. You will be prompted to authenticate with your Lucid account on first use.
 
 ### `plan-from-confluence`
 
@@ -103,31 +103,57 @@ The skill parses the space key and page ID from the URL, recursively fetches all
 
 > **Authentication:** The Atlassian MCP server requires authentication with your Atlassian account.
 
-### `constitution-from-confluence`
+### `plan-from-lucid`
 
-Fetches a Confluence page and its full child hierarchy, feeding each page individually into `/speckit.constitution`.
+Fetches a Lucidchart diagram page and uses it as context for `/speckit.plan`.
 
 ```
-/speckit-extensions:constitution-from-confluence <confluence-url> [additional-input]
+/speckit-extensions:plan-from-lucid <lucid-url> [additional-input]
 ```
 
 **Arguments:**
 
 | Argument | Required | Description |
 |---|---|---|
-| `confluence-url` | Yes | URL to a Confluence page, e.g. `https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Page+Title` |
-| `additional-input` | No | Extra context or instructions passed as a separate invocation of `/speckit.constitution` |
+| `lucid-url` | Yes | URL to a Lucidchart document page, including the `page` query parameter |
+| `additional-input` | No | Extra context or instructions to include alongside the diagram |
 
 **Example:**
 
 ```
-/speckit-extensions:constitution-from-confluence https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Home
-/speckit-extensions:constitution-from-confluence https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Home focus on the authentication domain
+/speckit-extensions:plan-from-lucid https://lucid.app/lucidchart/9c028565-3df6-4c34-9db4-449bb5c7c20d/edit?page=4WDSdv3BMKuG
+/speckit-extensions:plan-from-lucid https://lucid.app/lucidchart/9c028565-3df6-4c34-9db4-449bb5c7c20d/edit?page=4WDSdv3BMKuG focus on the data layer
 ```
 
-The skill parses the space key and page ID from the URL, recursively fetches all descendant pages depth-first via the Atlassian MCP server, and invokes `/speckit.constitution` once per page. If additional input is provided, it is passed as a final separate invocation.
+The skill parses the document ID and page ID from the URL, fetches the diagram from the Lucidchart MCP server in the most structured format available (SVG or XML preferred), and passes it along with any additional input to `/speckit.plan`.
 
-> **Authentication:** The Atlassian MCP server requires authentication with your Atlassian account.
+> **Authentication:** The Lucidchart MCP server uses OAuth. You will be prompted to authenticate with your Lucid account on first use.
+
+### `plan-from-swagger`
+
+Fetches an OpenAPI spec from SwaggerHub and uses it as context for `/speckit.plan`.
+
+```
+/speckit-extensions:plan-from-swagger <swaggerhub-url> [additional-input]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|---|---|---|
+| `swaggerhub-url` | Yes | URL to a SwaggerHub API spec, e.g. `https://api.swaggerhub.com/apis/MyOrg/MyAPI/1.0.0` |
+| `additional-input` | No | Extra context or instructions to include alongside the spec |
+
+**Example:**
+
+```
+/speckit-extensions:plan-from-swagger https://api.swaggerhub.com/apis/MyOrg/MyAPI/1.0.0
+/speckit-extensions:plan-from-swagger https://api.swaggerhub.com/apis/MyOrg/MyAPI/1.0.0 focus on the authentication endpoints
+```
+
+The skill fetches the fully-resolved OpenAPI spec (JSON format) via the fetch-swagger MCP server, then passes it along with any additional input to `/speckit.plan`.
+
+> **Authentication:** The SwaggerHub API requires an API key. Set `SWAGGERHUB_API_KEY` in your environment, or the skill will prompt you for it on first use.
 
 ## Updating
 
