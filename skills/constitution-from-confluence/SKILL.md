@@ -2,7 +2,7 @@
 name: constitution-from-confluence
 description: Use when the user wants to generate or refresh a project constitution from the Delivery Standards in Confluence — e.g. "constitution from confluence", "refresh the constitution", "/speckit-extensions:constitution-from-confluence". Reads .specify/repo-context.yaml, selects the steering-labelled pages under Delivery Standards whose appliesto-* labels match the repo's stack, feeds each into /speckit.constitution, and records what was used in .specify/memory/constitution.lock.yaml.
 user-invocable: true
-argument-hint: [confluence-url] [--force] [additional-input]
+argument-hint: "[confluence-url] [--force] [additional-input]"
 ---
 
 # constitution-from-confluence
