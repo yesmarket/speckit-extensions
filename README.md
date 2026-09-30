@@ -31,27 +31,65 @@ This plugin bundles the following MCP servers directly — no separate dependenc
 
 ### `constitution-from-confluence`
 
-Fetches a Confluence page and its full child hierarchy, feeding each page individually into `/speckit.constitution`.
+Builds or refreshes a repository's speckit constitution from the delivery standards in the Design and Delivery Standards (`DDS`) Confluence space. It reads the repo's stack from `.specify/repo-context.yaml`, selects only the pages that apply to that stack, and feeds each into `/speckit.constitution`.
 
 ```
-/speckit-extensions:constitution-from-confluence <confluence-url> [additional-input]
+/speckit-extensions:constitution-from-confluence [confluence-url] [--force] [additional-input]
 ```
 
 **Arguments:**
 
 | Argument | Required | Description |
 |---|---|---|
-| `confluence-url` | Yes | URL to a Confluence page, e.g. `https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Page+Title` |
-| `additional-input` | No | Extra context or instructions passed as a separate invocation of `/speckit.constitution` |
+| `confluence-url` | No | Root page to use instead of `Delivery Standards` (`https://humm-group.atlassian.net/wiki/spaces/DDS/pages/5818974222`). Only pages beneath it are considered. |
+| `--force` | No | Regenerate even if nothing has changed since the lock file was written |
+| `additional-input` | No | Extra context or instructions passed as a final, separate invocation of `/speckit.constitution` |
 
 **Example:**
 
 ```
-/speckit-extensions:constitution-from-confluence https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Home
-/speckit-extensions:constitution-from-confluence https://mycompany.atlassian.net/wiki/spaces/PROJ/pages/123456789/Home focus on the authentication domain
+/speckit-extensions:constitution-from-confluence
+/speckit-extensions:constitution-from-confluence --force
+/speckit-extensions:constitution-from-confluence focus on the payments domain
 ```
 
-The skill parses the space key and page ID from the URL, recursively fetches all descendant pages depth-first via the Atlassian MCP server, and invokes `/speckit.constitution` once per page. If additional input is provided, it is passed as a final separate invocation.
+#### Repo context
+
+Create `.specify/repo-context.yaml` in the repository to declare its stack:
+
+```yaml
+stack:
+  languages: [java]
+  cloud: [aws]
+  platforms: [ansible, terraform]
+  domains: []
+```
+
+If the file is missing or has no `stack`, only universal pages are used (and the skill warns you), which gives a thinner but still valid constitution.
+
+#### Which pages are used
+
+The skill finds every page under `Delivery Standards` and includes a page when it has the `steering` label and either:
+
+- has no `appliesto-*` labels (universal, always included), or
+- has at least one `appliesto-<namespace>-<value>` label that matches the repo context.
+
+| Label namespace | Repo context key | Example label |
+|---|---|---|
+| `lang` | `languages` | `appliesto-lang-java` |
+| `cloud` | `cloud` | `appliesto-cloud-aws` |
+| `platform` | `platforms` | `appliesto-platform-ansible` |
+| `domain` | `domains` | `appliesto-domain-broker-portal` |
+
+Multiple `appliesto-*` labels on a page are OR-ed, so one match is enough. Matching is case-insensitive. Pages without `steering` are never used.
+
+#### Lock file and refreshing
+
+After a run the skill writes `.specify/memory/constitution.lock.yaml`, recording the repo context and, for each page used, its ID, title, version, labels and why it was included. Commit it with the constitution.
+
+Run the same command again to refresh. If a lock file exists, the skill compares the pages that apply now against the lock and reports which were added, removed or updated. If nothing changed it stops without regenerating (use `--force` to override). Otherwise it regenerates the constitution from the full set of applicable pages.
+
+The skill only ever reads from Confluence.
 
 > **Authentication:** The Atlassian MCP server requires authentication with your Atlassian account.
 
